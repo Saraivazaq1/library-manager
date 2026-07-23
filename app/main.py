@@ -1,14 +1,16 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
-from os import getenv
-from dotenv import load_dotenv
-from mssql_python import connect
 
-load_dotenv()
-conn = connect(getenv("SQL_CONNECTION_STRING"))
+from .database.init_db import init_db
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 @app.get("/")
 def read_root():
     return {"Connection": "Started"}
-
