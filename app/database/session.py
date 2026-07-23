@@ -1,5 +1,5 @@
-from sqlalchemy import engine
 from sqlmodel import Session
+from .connection import engine
 
 def get_session():
     with Session(engine) as session:
